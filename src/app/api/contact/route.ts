@@ -105,7 +105,7 @@ export async function POST(request: Request) {
 
           <p style="font-size:16px;color:#333;line-height:1.8;">
             Un conseiller reviendra vers vous dans les meilleurs délais, généralement sous
-            <strong>24 heures ouvrées</strong>, afin d'échanger avec vous et de vous accompagner dans votre projet.
+            24 heures, afin d'échanger avec vous et de vous accompagner dans votre projet.
           </p>
 
           <p style="font-size:16px;color:#333;line-height:1.8;">
@@ -117,7 +117,7 @@ export async function POST(request: Request) {
           </p>
 
           <p style="font-size:16px;color:#333;margin-bottom:0;">
-            <strong>L'équipe Maison KEMEL</strong>
+            <strong>Maison KEMEL</strong>
           </p>
 
           <p style="color:#777;font-size:14px;margin-top:5px;">
