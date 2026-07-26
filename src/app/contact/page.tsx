@@ -1,9 +1,86 @@
+"use client";
+
+import { useState } from "react";
+
 import Header from "@/components/Header";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function ContactPage() 
 {
+    const [formData, setFormData] = useState({
+  first_name: "",
+  last_name: "",
+  email: "",
+  phone: "",
+  country: "",
+  company: "",
+  subject: "",
+  message: "",
+});
+
+const [loading, setLoading] = useState(false);
+
+const [success, setSuccess] = useState("");
+
+const [error, setError] = useState("");
+
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  setLoading(true);
+  setSuccess("");
+  setError("");
+
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Une erreur est survenue.");
+    }
+
+    setSuccess("Votre demande a bien été envoyée.");
+
+    setFormData({
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      country: "",
+      company: "",
+      subject: "",
+      message: "",
+    });
+  } catch (err) {
+    setError(
+      err instanceof Error
+        ? err.message
+        : "Une erreur est survenue."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
+
   return (
     <>
       <Header />
@@ -189,46 +266,72 @@ export default function ContactPage()
 
     <div className="mt-24 rounded-sm bg-white p-16 shadow-xl">
 
-      <form className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
 
         <div className="grid gap-6 md:grid-cols-2">
 
           <input
-            type="text"
-            placeholder="Prénom"
-            className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
-          />
+  type="text"
+  name="first_name"
+  placeholder="Prénom"
+  value={formData.first_name}
+  onChange={handleChange}
+  className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
+/>
 
           <input
-            type="text"
-            placeholder="Nom"
-            className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
-          />
+  type="text"
+  name="last_name"
+  placeholder="Nom"
+  value={formData.last_name}
+  onChange={handleChange}
+  className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
+/>
 
         </div>
 
         <input
-          type="email"
-          placeholder="Adresse e-mail"
-          className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
-        />
+  type="email"
+  name="email"
+  placeholder="Adresse e-mail"
+  value={formData.email}
+  onChange={handleChange}
+  className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
+/>
 
         <input
-          type="tel"
-          placeholder="Téléphone"
-          className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
-        />
+  type="tel"
+  name="phone"
+  placeholder="Téléphone"
+  value={formData.phone}
+  onChange={handleChange}
+  className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
+/>
 
         <input
-          type="text"
-          placeholder="Pays de résidence"
-          className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
-        />
+  type="text"
+  name="country"
+  placeholder="Pays de résidence"
+  value={formData.country}
+  onChange={handleChange}
+  className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
+/>
+
+<input
+  type="text"
+  name="company"
+  placeholder="Entreprise (facultatif)"
+  value={formData.company}
+  onChange={handleChange}
+  className="w-full border border-[#DDD] px-5 py-4 outline-none transition focus:border-[#B88A44]"
+/>
 
         <select
-          defaultValue=""
-          className="w-full border border-[#DDD] bg-white px-5 py-4 outline-none transition focus:border-[#B88A44]"
-        >
+  name="subject"
+  value={formData.subject}
+  onChange={handleChange}
+  className="w-full border border-[#DDD] bg-white px-5 py-4 outline-none transition focus:border-[#B88A44]"
+>
           <option value="" disabled>
             Objet de votre demande
           </option>
@@ -243,17 +346,33 @@ export default function ContactPage()
         </select>
 
         <textarea
-          rows={12}
-          placeholder="Décrivez votre projet, vos envies ou votre demande..."
-          className="w-full border border-[#DDD] px-5 py-5 outline-none transition focus:border-[#B88A44]"
-        />
+  rows={12}
+  name="message"
+  value={formData.message}
+  onChange={handleChange}
+  placeholder="Décrivez votre projet, vos envies ou votre demande..."
+  className="w-full border border-[#DDD] px-5 py-5 outline-none transition focus:border-[#B88A44]"
+/>
 
-        <button
-          type="submit"
-          className="w-full rounded-full bg-[#B88A44] py-5 text-xs uppercase tracking-[0.35em] text-white transition hover:bg-[#9D7439]"
-        >
-          Envoyer ma demande
-        </button>
+{success && (
+  <div className="rounded-md border border-green-200 bg-green-50 p-4 text-green-700">
+    {success}
+  </div>
+)}
+
+{error && (
+  <div className="rounded-md border border-red-200 bg-red-50 p-4 text-red-700">
+    {error}
+  </div>
+)}
+
+<button
+  type="submit"
+  disabled={loading}
+  className="w-full rounded-full bg-[#B88A44] py-5 text-xs uppercase tracking-[0.35em] text-white transition hover:bg-[#9D7439] disabled:cursor-not-allowed disabled:opacity-50"
+>
+  {loading ? "Envoi en cours..." : "Envoyer ma demande"}
+</button>
 
       </form>
 
