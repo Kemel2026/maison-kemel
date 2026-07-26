@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
     // Notification à Maison KEMEL
     const clientEmail = await resend.emails.send({
-      from: "Maison KEMEL <onboarding@resend.dev>",
+      from: "Maison KEMEL <contact@maison-kemel.com>",
       to: "mewetie@gmail.com",
       subject: "Nouvelle demande Maison KEMEL",
       html: `
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
     // Confirmation envoyée au client
    await resend.emails.send({
-  from: "Maison KEMEL <onboarding@resend.dev>",
+  from: "Maison KEMEL <contact@maison-kemel.com>",
   to: body.email,
   subject: "Votre demande a bien été reçue – Maison KEMEL",
 
